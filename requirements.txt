@@ -1,0 +1,11 @@
+# Desktop app and optional local API backend.
+# Python 3.11, 3.12, or 3.13 on 64-bit Windows is recommended.
+
+faster-whisper==1.1.1
+av>=11,<19
+numpy>=1.26,<3
+sounddevice>=0.5.1,<1
+huggingface_hub>=0.24,<2
+fastapi>=0.115,<1
+uvicorn[standard]>=0.34,<1
+requests>=2.32,<3
