@@ -104,7 +104,7 @@ def load_audio_mono(audio_path: Path, target_sr: int = 16000):
 
     Prefer Faster-Whisper's bundled PyAV decoder when installed. This supports
     common audio containers (including MP4/M4A) without requiring a separate
-    system FFmpeg installation. Get Libraries validates decoding as well as
+    system FFmpeg installation. The Start file validates decoding as well as
     installed versions, so broken binaries are detected before first use.
     """
     import numpy as np
@@ -182,7 +182,7 @@ def load_audio_mono(audio_path: Path, target_sr: int = 16000):
             "Incompatible PyAV/Faster-Whisper versions: the installed PyAV no "
             "longer accepts the metadata_errors argument used by the current "
             "Faster-Whisper decoder. Close the app and run "
-            "2 - Get Libraries.cmd from the project folder. "
+            "Start NR Voice Typing.cmd -Repair from the project folder. "
             f"Original error: {faster_whisper_decode_error}"
         ) from faster_whisper_decode_error
 
@@ -905,7 +905,7 @@ class FasterWhisperAdapter(BaseAdapter):
                 raise RuntimeError(
                     "Faster-Whisper audio decoding failed because the installed "
                     "PyAV version is incompatible. Close the app and run "
-                    "2 - Get Libraries.cmd from the project folder. "
+                    "Start NR Voice Typing.cmd -Repair from the project folder. "
                     "Details: " + str(exc)
                 ) from exc
             raise RuntimeError("Faster-Whisper transcription failed. Details: " + str(exc)) from exc

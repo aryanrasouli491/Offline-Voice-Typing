@@ -5,7 +5,7 @@ $projectRoot = Split-Path -Parent $PSScriptRoot
 $pythonPath = Join-Path $projectRoot '.venv\Scripts\python.exe'
 try {
     if (-not (Test-Path -LiteralPath $pythonPath)) {
-        if ($CheckOnly) { throw 'Libraries are not installed. Run 2 - Get Libraries.cmd.' }
+        if ($CheckOnly) { throw 'Libraries are not installed. Run Start NR Voice Typing.cmd.' }
         # Query interpreters without changing PATH, system Python or other environments.
         $basePython = $null
         if (Get-Command py.exe -ErrorAction SilentlyContinue) {
@@ -29,7 +29,7 @@ try {
     if ($CheckOnly) { $installerArgs += '--check' }
     & $pythonPath @installerArgs
     if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
-    Write-Host 'Libraries are ready. Next: 3 - Get Model and Start.cmd' -ForegroundColor Green
+    Write-Host 'Required libraries are ready.' -ForegroundColor Green
 } catch {
     Write-Host $_.Exception.Message -ForegroundColor Red
     exit 1

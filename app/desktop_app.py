@@ -24,7 +24,7 @@ def main():
             error_root = tk.Tk()
             error_root.withdraw()
             messagebox.showerror(f"{APP_NAME} could not start",
-                                 f"{exc}\n\nCheck runtime/data/app.log. If dependencies are missing, run 2 - Get Libraries.cmd.",
+                                 f"{exc}\n\nCheck runtime/data/app.log, then run Start NR Voice Typing.cmd -Repair.",
                                  parent=error_root)
             error_root.destroy()
         except Exception:

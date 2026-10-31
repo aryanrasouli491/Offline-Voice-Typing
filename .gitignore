@@ -1,16 +1,11 @@
 .venv*/
-.build/
 .test_tmp/
 __pycache__/
 *.py[cod]
 runtime/
-development/tests/artifacts/
-development/tests/fixtures/
-app/backend/local_config.json
 # Guard legacy layout and local secrets too.
 data/
 models/
-backend/local_config.json
 .env
 .env.*
 !.env.example

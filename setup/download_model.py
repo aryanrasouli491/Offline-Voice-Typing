@@ -48,7 +48,7 @@ def main():
             raise RuntimeError("; ".join(errors))
     except Exception as exc:
         print(f"Model setup failed: {exc}")
-        print("Run Get Libraries if needed; check the connection, then retry Get Model and Start.")
+        print("Check the connection, then run Start NR Voice Typing.cmd again.")
         return 1
     print("Small is ready. Normal dictation now works offline.")
     return 0

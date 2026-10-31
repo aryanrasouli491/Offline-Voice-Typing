@@ -1,234 +1,150 @@
 # NR Voice Typing — Offline Voice Typing for Windows
 
-**Version 2.0.0 · English and Dari/Persian · Local speech recognition · MIT**
+**Version 2.0.0 · English and Dari/Persian · Local Whisper Small · MIT**
 
-Turn speech into text in a focused desktop editor or in another application's text box.
-NR Voice Typing uses a local Small speech model. After setup, normal dictation works
-without an internet connection, account, subscription, or cloud speech service.
+NR Voice Typing turns speech into text in its editor or directly inside another
+Windows application. After the first setup, normal dictation works locally without
+an account, subscription, or cloud speech service.
 
-> **Accuracy status:** English produced the complete expected sentence in the included
-> clear-speech end-to-end test. Dari/Persian support is experimental and currently less
-> accurate; no representative Dari accuracy percentage has been established yet.
-> Microphone quality, accent, background speech, and room noise can change results.
+> **Accuracy status:** the clear English end-to-end sample produced the complete
+> expected sentence. English accuracy was good in that test. Dari/Persian support
+> is experimental and currently less accurate. No representative Dari accuracy
+> percentage has been established. Microphone quality, accent, noise, and nearby
+> speakers can change the result.
 
 Developed by **Nooraqa Rasouli — Software Engineer**.
-[Developer's GitHub](https://github.com/aryanrasouli491) ·
-[Source code](https://github.com/aryanrasouli491/Offline-Voice-Typing) ·
-[Report an issue](https://github.com/aryanrasouli491/Offline-Voice-Typing/issues) ·
+[Developer profile](https://github.com/aryanrasouli491) ·
+[Project repository](https://github.com/aryanrasouli491/Offline-Voice-Typing) ·
 [MIT License](LICENSE)
 
 ![NR Voice Typing desktop editor](app/assets/studio-preview.png)
 
-## What you can do
+## Simple installation
 
-- Dictate English or Dari/Persian, including English spoken with a non-native accent.
-- Start and stop with a button, a global shortcut, or the transparent floating wave.
-- Mute to transcribe immediately, then unmute to continue the same text.
-- Use **Resume** after a manual stop to append; a normal new recording replaces the editor.
-- Preview provisional text while speaking and receive a complete final transcription.
-- Save compressed M4A recordings with English or Dari/Persian filenames.
-- Search local history and delete several selected entries together.
-- Switch between dark and light themes. Hover over icons to see their purpose.
+You need Windows 10/11, a microphone, internet access for the first setup, and
+**Python 3.12 (64-bit)**. When installing Python from
+[python.org](https://www.python.org/downloads/windows/), keep **pip**, **Tcl/Tk**,
+and the **Python launcher** enabled.
 
-![NR Voice Typing in light mode](app/assets/light-preview.png)
+1. [Download NR Voice Typing v2.0.0](https://github.com/aryanrasouli491/Offline-Voice-Typing/archive/refs/tags/v2.0.0.zip).
+2. Extract the ZIP into a normal writable folder such as Documents. Do not run it
+   from inside the ZIP or from Program Files.
+3. Double-click **Start NR Voice Typing.cmd**.
+4. Keep the setup window open during the first run. It downloads only missing
+   Python packages and the multilingual Small model (about 484 MB plus metadata).
+5. When setup finishes, the app opens automatically. Future starts use the same
+   file and open immediately.
 
-## Install: three clearly named files
+That single Start file handles library checks, model setup, installation validation,
+and normal launching. Existing compatible packages and a complete model are reused.
+Interrupted downloads can be retried by double-clicking Start again.
 
-You need a **64-bit Windows computer**, a microphone, and **Python 3.12 (64-bit)**.
-Install Python from [python.org](https://www.python.org/downloads/windows/) with
-**pip**, **Tcl/Tk**, and the **Python launcher** enabled. A GPU and administrator
-access are not required by the app. Allow internet access during initial setup.
+## Clean download contents
 
-Keep the project in a writable folder, such as a folder inside your user account.
-Do not run it from inside a ZIP file or from Program Files.
+The GitHub ZIP contains only the files needed to run, understand, and legally share
+the open-source application:
 
-| File | What happens when you double-click it |
-| --- | --- |
-| **1 - Get Project.cmd** | Downloads the version 2.0.0 source from this GitHub repository into a new `NR Voice Typing 2.0.0` folder beside the file. It works by itself, without the rest of the project or Python. |
-| **2 - Get Libraries.cmd** | Creates/reuses the project's Python environment, checks required package versions, installs missing/incompatible packages, then verifies imports and audio decoding. |
-| **3 - Get Model and Start.cmd** | Downloads multilingual Small if needed, verifies the installation, and opens the app. If Small is already present, it starts without downloading it again. |
+- **Start NR Voice Typing.cmd** — the only file a normal user needs to double-click.
+- **app/** — application source and the required logo.
+- **setup/** — first-run dependency/model setup and verification.
+- **README.md** — this installation and usage guide.
+- **LICENSE** — the complete MIT terms and original developer copyright.
+- **.gitignore** — prevents models, libraries, logs, settings, tokens, and history
+  from being committed accidentally.
 
-**If you downloaded only Get Project:**
+The download does **not** contain a Git repository, virtual environment, model,
+personal history, settings, logs, tokens, test suite, generated reports, packaging
+tools, or development artifacts. GitHub does not include `.git/` in Download ZIP.
 
-1. Put `1 - Get Project.cmd` in the folder where you want the project.
-2. Double-click it and wait for the success message.
-3. Open the new `NR Voice Typing 2.0.0` folder.
-4. Double-click `2 - Get Libraries.cmd`. Keep its window open until it finishes.
-5. Double-click `3 - Get Model and Start.cmd`. The first model download is about 484 MB,
-   plus small metadata files. Package downloads need additional space.
-6. Wait for the model-ready message, choose your language, and start speaking.
+The first run creates two local folders:
 
-**If you downloaded the full source ZIP:** extract it, open the extracted project,
-and start at step 4. You do not need Get Project again.
+- `.venv/` contains local Python packages.
+- `runtime/` contains the downloaded model and your private local data.
 
-The standalone downloader is pinned to the published **v2.0.0 GitHub tag**, so its
-contents cannot silently change with later development on the main branch.
-
-Existing compatible packages visible to the chosen Python 3.12 installation are
-reused. A new environment enables Python's system-site-packages support; new packages
-are installed inside this project's `.venv`. Existing environments keep their settings.
-Packages from unrelated virtual environments are not copied or modified.
-Running Get Libraries again keeps compatible versions and uses pip's download cache.
-[Python environment behavior](https://docs.python.org/3.12/library/venv.html) ·
-[pip installation behavior](https://pip.pypa.io/en/stable/cli/pip_install/)
-
-Model files go into `runtime/models/small/`. The model comes directly from
-[Systran/faster-whisper-small](https://huggingface.co/Systran/faster-whisper-small).
-Interrupted downloads can be retried. Complete local model files are reused offline.
-
-## Open the app next time
-
-Double-click **3 - Get Model and Start.cmd**. It reuses the installed model.
-For a direct launch without a setup window, use **app/Start NR Voice Typing.vbs**.
-You may create a Windows shortcut to either file.
-
-Do not copy `.venv` between computers or installation folders. Recreate it with
-Get Libraries after moving to a different machine. Keep your model and data folders.
+Both are excluded from GitHub. Do not upload them. Back up `runtime/data/` if you
+want to preserve settings and transcript history before moving or reinstalling.
 
 ## Everyday use
 
-1. Choose **English** or **Dari / فارسی**. Choose English even if your English has an accent.
-2. Click **Start speaking**. Click **Stop & transcribe** to finish immediately.
-3. After a manual stop, **Resume** appears and appends your next recording.
-   Starting normally creates a replacement transcript.
-4. Click the microphone icon to mute. Captured speech is submitted immediately.
-   Unmute continues in order; muted sound is not recorded.
-5. To dictate into another app, focus its input and press **Ctrl+Alt+Space**.
-   Press again to finish. The floating wave can also start/stop without taking focus.
-6. Drag the floating wave to position it; its location is remembered. Right-click for
-   its menu. Closing the editor may leave this wave running; choose **Quit** to exit.
-7. In History, use Ctrl/Shift to select multiple rows and delete them together.
+- Choose **English** or **Dari / فارسی**, then click **Start speaking**.
+- Click **Stop & transcribe** to finish immediately.
+- After a manual stop, **Resume** appends the next recording. A normal new session
+  replaces the editor text.
+- The microphone icon mutes recording and immediately transcribes captured speech.
+  Unmuting continues the same transcript; muted audio is not stored.
+- Focus another application's input and press **Ctrl+Alt+Space** to dictate there.
+- Drag the transparent floating wave to save its position. Right-click it to reopen
+  the editor or quit the background app.
+- Live preview is provisional. Final transcription uses the complete segment.
+- Select several History rows with Ctrl/Shift to delete them together.
 
-**Save a voice recording:** after stopping, or while muted, click the download arrow
-beside Save .txt. Enter a name such as `My meeting` or `صدای من`.
-The default name is `voice001_YYYY-MM-DD_HH-MM-SS`. Recordings are saved in your
-Windows **Music/NR Voice Typing Voices/** folder, including when Music is redirected.
-Files use mono AAC in M4A at 32 kbit/s, approximately 240 KB per minute.
-A repeated filename gets a numeric suffix; existing recordings are never overwritten.
-A save contains the current recording session's unmuted audio. Resume begins another
-audio session while appending its text.
+The speech detector rejects non-speech noise, but it is not speaker identification.
+It cannot guarantee that a nearby person's voice will be ignored. A close headset
+microphone usually gives better results in shared or noisy rooms.
 
-**Live preview and accuracy:** preview text is provisional. Final transcription uses
-the complete segment. Settings offers Fast, Balanced, and Accurate decoding.
-The included clear English fixture produced its complete expected sentence in the
-end-to-end test. This is a functional result, not a universal accuracy percentage.
-Dari/Persian accuracy is currently lower and remains experimental because the project
-does not yet have a representative labeled Dari evaluation set. Recognition can make
-mistakes, especially with unfamiliar accents, distant voices, or overlapping speakers;
-review the result. The speech detector filters non-speech
-noise, but it does not identify your voice or exclude all other speakers.
-The wave's visual sensitivity is separate from silence detection.
-Progress uses model callbacks and locally measured timing; only actual completion
-reaches 100%. Each recording session is limited to two minutes.
+## Save a recording
 
-## Your files and privacy
+After stopping, or while muted, click the download arrow beside **Save .txt**.
+English and Dari/Persian filenames such as `My meeting` or `صدای من` are supported.
+The default format is `voice001_YYYY-MM-DD_HH-MM-SS`.
 
-| Folder | Contents |
-| --- | --- |
-| `app/` | Desktop source, interface assets, direct launcher, and optional local API |
-| `setup/` | Library/model installers, requirements, and installation checks |
-| `development/` | Tests and a source-release packaging tool |
-| `runtime/models/` | Downloaded models; created locally and excluded from GitHub |
-| `runtime/data/` | Your settings, transcript history, logs, and timing calibration |
-| `.venv/` | Local Python libraries; excluded from GitHub |
+Recordings are compressed M4A files saved under:
 
-The app processes normal dictation locally. Setup contacts GitHub, PyPI and Hugging Face.
-History is stored locally in SQLite; disable history in Settings if you prefer.
-Recordings are exported only when you request a save. Logs can contain local file
-paths and technical errors; inspect them before sharing.
+`Music/NR Voice Typing Voices/`
 
-Back up `runtime/data/` before reinstalling. Exported voices stay in Music independently.
-The v2 folder reorganization preserves existing local history and adjusts old model
-selection paths. If you select a model outside the project, it remains in that location.
+Existing recordings are never overwritten; repeated names receive a number suffix.
+
+## Privacy and security
+
+- Normal speech recognition runs locally after setup.
+- Setup connects only to GitHub, Python package sources, and Hugging Face for the
+  required source, packages, and public Small model.
+- The app runs with ordinary user permissions and does not require administrator access.
+- Model loading uses local paths and offline mode during dictation.
+- Audio processing and inference queues are bounded to prevent unlimited memory use.
+- External text insertion rechecks the destination and preserves Unicode text.
+- Clipboard insertion restores the previous clipboard only when the app still owns it.
+- History and settings remain under `runtime/data/` on the local computer.
+- Downloaded model and third-party packages retain their own upstream licenses.
 
 ## Troubleshooting
 
-| Problem | What to do |
+| Problem | Solution |
 | --- | --- |
-| Get Project says the release is unavailable | Check the connection and confirm that the [v2.0.0 tag](https://github.com/aryanrasouli491/Offline-Voice-Typing/releases/tag/v2.0.0) is reachable. |
-| The download destination already exists | Open that folder and continue setup. The downloader intentionally does not merge or overwrite an installation. |
-| Python is missing or the wrong version | Install Python 3.12, 64-bit, with Tcl/Tk and the launcher. Then rerun Get Libraries. |
-| Package or model download stops | Check the connection and free disk space, then run the same file again. Keep its window open. |
-| Libraries are present but imports fail | Close the app, rename only `.venv` to `.venv-old`, and rerun Get Libraries. If globally shared packages conflict, create an isolated environment with `py -3.12 -m venv .venv`, then rerun Get Libraries. Keep `runtime/` intact. |
-| No usable model | Run Get Model and Start, or choose the correct model folder in Settings. |
-| Microphone does not record | Enable microphone access for desktop apps in Windows settings and select the correct microphone in the app. |
-| Text does not reach another app | Refocus its input. Try Clipboard paste or Unicode typing in Settings. A normal app cannot type into an elevated/admin-only window. |
-| Shortcut is already used | Choose another supported shortcut in Settings. |
-| App does not open | Run the direct command below to see errors, and inspect `runtime/data/app.log`. |
+| Start says Python is missing | Install Python 3.12 (64-bit) with pip, Tcl/Tk, and the launcher, then double-click Start again. |
+| A download stops | Check the internet connection and free space, then run Start again. Completed files are reused. |
+| The app does not open | Run `Start NR Voice Typing.cmd -Repair` to repeat dependency, model, and installation checks. |
+| No microphone input | Enable Windows microphone access for desktop apps and choose the correct device in Settings. |
+| Text does not reach another app | Refocus its input and try Clipboard paste or Unicode typing in Settings. A normal app cannot type into an administrator-only window. |
+| Shortcut is occupied | Choose another supported shortcut in Settings. |
+| No usable model | Run Start with `-Repair`, or select the correct local model folder in Settings. |
 
-Open PowerShell in the project folder for these optional checks:
+Technical errors are written to `runtime/data/app.log`. Logs can contain local file
+paths, so inspect them before sharing.
 
-```powershell
-# Read-only library check: no installs or downloads
-& '.\2 - Get Libraries.cmd' -CheckOnly
-# Check libraries and the local model, without recording
-.venv\Scripts\python.exe setup\check_installation.py
-# Open with a console so startup errors are visible
-.venv\Scripts\python.exe app\desktop_app.py
-```
+## Open source and copyright
 
-## Developers and contributions
+The readable source remains in `app/` and `setup/`; removing development artifacts
+does not make the project closed source. Contributions and independent forks are
+welcome.
 
-The desktop uses Python/Tk, a bounded microphone buffer, one serialized transcription
-worker, CPU INT8 inference, and native Windows hotkeys/Unicode insertion.
-`app/app_info.py` defines the product version. `app/project_paths.py` defines local paths.
-`voice_app.py` owns UI state; `audio_capture.py` owns capture/VAD;
-`speech_engine.py` owns model adapters; `app_storage.py` owns local persistence.
-Comments explain thread ownership, cancellation, data safety, and compatibility decisions.
+Copyright © 2026 **Nooraqa Rasouli**. This project is released under the
+[MIT License](LICENSE). MIT permits use, modification, distribution, private use,
+and commercial use, provided the copyright and license notice remain with copies or
+substantial portions. Source files also contain an SPDX MIT notice so the original
+developer is not lost when files are copied or modified.
 
-Fork the project, create a focused branch, keep Unicode support and local processing,
-and submit a pull request explaining the change and its checks.
-Do not commit personal data, model weights, environment folders, or access tokens.
-Use an issue to describe bugs with reproduction steps and your Windows/Python versions.
+Independent forks should identify themselves clearly and must not claim endorsement
+by the original developer.
 
-```powershell
-# Optional API dependencies are needed for the full test suite.
-.venv\Scripts\python.exe -m pip install -r setup\requirements-api.txt
-# Generate a test voice with Windows' built-in speech synthesis.
-powershell -NoProfile -ExecutionPolicy Bypass -File development\tests\create_fixture.ps1
-.venv\Scripts\python.exe development\run_tests.py
-.venv\Scripts\python.exe development\tests\ui_smoke.py
-.venv\Scripts\python.exe development\tests\windows_e2e.py
-# Build a source-only ZIP and checksum under .build/.
-.venv\Scripts\python.exe development\package_release.py
-```
+## Repository description and search topics
 
-The Windows end-to-end test uses a disposable input window and briefly opens the
-microphone to check capture. Do not use the keyboard/mouse during that test.
-Generated test outputs, fixtures, and release ZIPs are excluded from GitHub.
-Archive tests use local files; they do not download a release.
+Suggested description:
 
-The optional loopback API is separate from desktop dictation. To use it, install
-`setup/requirements-api.txt`, run `setup/prepare_backend_config.py`, then
-`app/backend/main.py` with the project's Python. It listens on 127.0.0.1:8765 and
-requires the private token in `app/backend/local_config.json`.
-Never publish that file or enable the API on a public interface.
+> Offline voice typing for Windows. Clear English tested well; Dari/Persian is
+> experimental and less accurate. Local Whisper Small. Developed by Nooraqa Rasouli.
 
-## GitHub release and discoverability
+Topics: `offline-voice-typing`, `speech-to-text`, `whisper`, `windows`, `python`,
+`dari`, `persian`, `accessibility`.
 
-Version **v2.0.0** is published in the existing
-[Offline-Voice-Typing repository](https://github.com/aryanrasouli491/Offline-Voice-Typing),
-preserving its earlier commit history. The source release excludes models, libraries,
-history, settings, logs, test artifacts, and access tokens.
-
-Repository description: **Offline voice typing for Windows. Clear English tested well;
-Dari/Persian is experimental and less accurate. Local Whisper Small. Developed by
-Nooraqa Rasouli.** Topics include `offline-voice-typing`, `speech-to-text`, `whisper`,
-`windows`, `python`, `dari`, `persian`, and `accessibility`.
-
-These details and the screenshots help people understand and find the project. Search
-ranking and indexing are controlled by GitHub and cannot be guaranteed.
-
-## License and credits
-
-Copyright © 2026 **Nooraqa Rasouli**. Project code and included project assets are
-released under the [MIT License](LICENSE). Code files carry an SPDX MIT notice.
-MIT allows use, modification, redistribution, and commercial use while requiring
-the copyright and license notice to remain with copies or substantial portions.
-No license purchase or registration is needed. [MIT terms](https://choosealicense.com/licenses/mit/)
-
-Please label independent forks clearly and do not claim the developer's endorsement.
-This is a branding request, not an additional restriction on the MIT code license.
-Downloaded dependencies and model weights keep their own upstream licenses.
-Thanks to Faster-Whisper/CTranslate2, Whisper, Silero VAD, PyAV/FFmpeg, NumPy,
-sounddevice/PortAudio, Python/Tk, and Hugging Face for the local speech stack.
+These details improve discoverability, but GitHub controls indexing and search ranking.

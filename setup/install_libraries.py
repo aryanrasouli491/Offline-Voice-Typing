@@ -76,7 +76,7 @@ def main(argv=None):
                                  "--disable-pip-version-check", "--only-binary=:all:",
                                  "-r", str(REQUIREMENTS)], check=False)
         if result.returncode:
-            print("Check the connection and retry Get Libraries. Compatible packages are kept.")
+            print("Check the connection and run Start NR Voice Typing.cmd again. Compatible packages are kept.")
             return result.returncode
         remaining = missing_requirements()
         if remaining:
