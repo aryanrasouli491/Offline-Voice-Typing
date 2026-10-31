@@ -2,6 +2,9 @@
 param([switch]$Repair, [switch]$SetupOnly)
 
 $ErrorActionPreference = 'Stop'
+# Keep the portable project folder clean. The application does not need
+# Python bytecode caches, and child Python processes inherit this setting.
+$env:PYTHONDONTWRITEBYTECODE = '1'
 $projectRoot = [IO.Path]::GetFullPath((Split-Path -Parent $PSScriptRoot))
 $python = Join-Path $projectRoot '.venv\Scripts\python.exe'
 $pythonw = Join-Path $projectRoot '.venv\Scripts\pythonw.exe'
