@@ -61,9 +61,8 @@ Do not run it from inside a ZIP file or from Program Files.
 **If you downloaded the full source ZIP:** extract it, open the extracted project,
 and start at step 4. You do not need Get Project again.
 
-The standalone downloader is pinned to the **v2.0.0 GitHub tag**. Until the developer
-publishes that tag, it reports that the release is unavailable. This local release
-preparation does not publish or change the existing GitHub repository.
+The standalone downloader is pinned to the published **v2.0.0 GitHub tag**, so its
+contents cannot silently change with later development on the main branch.
 
 Existing compatible packages visible to the chosen Python 3.12 installation are
 reused. A new environment enables Python's system-site-packages support; new packages
@@ -146,7 +145,7 @@ selection paths. If you select a model outside the project, it remains in that l
 
 | Problem | What to do |
 | --- | --- |
-| Get Project says the release is unavailable | Check the connection and the repository's Releases page. Version v2.0.0 must be published first. |
+| Get Project says the release is unavailable | Check the connection and confirm that the [v2.0.0 tag](https://github.com/aryanrasouli491/Offline-Voice-Typing/releases/tag/v2.0.0) is reachable. |
 | The download destination already exists | Open that folder and continue setup. The downloader intentionally does not merge or overwrite an installation. |
 | Python is missing or the wrong version | Install Python 3.12, 64-bit, with Tcl/Tk and the launcher. Then rerun Get Libraries. |
 | Package or model download stops | Check the connection and free disk space, then run the same file again. Keep its window open. |
@@ -205,26 +204,20 @@ The optional loopback API is separate from desktop dictation. To use it, install
 requires the private token in `app/backend/local_config.json`.
 Never publish that file or enable the API on a public interface.
 
-## Publishing version 2.0.0 later
+## GitHub release and discoverability
 
-1. Build and inspect the source-only ZIP. Clone the existing
-   [Offline-Voice-Typing repository](https://github.com/aryanrasouli491/Offline-Voice-Typing)
-   into a clean folder and create a release branch.
-2. Copy the reviewed source into that clone. Keep its `.git` and previous commit history.
-   Review additions and deletions; do not force-push or upload this working folder wholesale.
-3. Run the checks, open/review the pull request, and merge when ready.
-4. Tag the reviewed commit **v2.0.0** and create the GitHub release.
-   Attach `1 - Get Project.cmd`, the source ZIP, and its checksum.
-   Test the standalone downloader against the published tag.
-5. Use the repository description: **Offline voice typing for Windows in English and
-   Dari/Persian, with local Whisper speech recognition. Developed by Nooraqa Rasouli.**
-   Suggested topics: `offline-voice-typing`, `speech-to-text`, `whisper`, `windows`,
-   `python`, `dari`, `persian`, `accessibility`.
-   The screenshots and installation guide above are ready for the repository page.
+Version **v2.0.0** is published in the existing
+[Offline-Voice-Typing repository](https://github.com/aryanrasouli491/Offline-Voice-Typing),
+preserving its earlier commit history. The source release excludes models, libraries,
+history, settings, logs, test artifacts, and access tokens.
 
-These steps preserve the previous repository history. A descriptive name, README,
-screenshots, and relevant topics help people understand/find the project; search
-ranking is controlled by GitHub and cannot be guaranteed.
+Repository description: **Offline voice typing for Windows. Clear English tested well;
+Dari/Persian is experimental and less accurate. Local Whisper Small. Developed by
+Nooraqa Rasouli.** Topics include `offline-voice-typing`, `speech-to-text`, `whisper`,
+`windows`, `python`, `dari`, `persian`, and `accessibility`.
+
+These details and the screenshots help people understand and find the project. Search
+ranking and indexing are controlled by GitHub and cannot be guaranteed.
 
 ## License and credits
 
