@@ -1,0 +1,9 @@
+# Desktop only. Tk is supplied by the Python Windows installer.
+faster-whisper==1.1.1
+# Decoder and AAC export are verified during setup; current tested PyAV is 18.1.
+av>=11,<19
+numpy>=1.26,<3
+sounddevice>=0.5,<0.6
+huggingface-hub>=0.24,<2
+# faster-whisper 1.1.1 imports requests but does not declare it itself.
+requests>=2.31,<3
