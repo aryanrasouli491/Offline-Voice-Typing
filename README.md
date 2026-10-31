@@ -78,6 +78,12 @@ want to preserve settings and transcript history before moving or reinstalling.
 - Live preview is provisional. Final transcription uses the complete segment.
 - Select several History rows with Ctrl/Shift to delete them together.
 
+Balanced recognition now searches five alternatives; Accurate searches eight and
+keeps more quiet/accented syllables at phrase edges. Conservative confidence checks
+discard strong noise/repetition hallucinations. The conversion bar calibrates itself
+per model, language, quality, audio duration, and recent CPU speed. It approaches
+99% from measured timing and shows 100% only after conversion actually finishes.
+
 The speech detector rejects non-speech noise, but it is not speaker identification.
 It cannot guarantee that a nearby person's voice will be ignored. A close headset
 microphone usually gives better results in shared or noisy rooms.

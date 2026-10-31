@@ -650,7 +650,9 @@ class VoiceTypingApp(tk.Tk):
         progress = 1.0 if complete_flash else self.display_progress
         converting = self.finishing or (self.active and self.muted and bool(self.pending))
         if converting:
-            self.timer.set(f"≈ {min(98, int(progress*100))}%")
+            # Reserve 100% for the real worker completion event; calibrated
+            # progress may approach 99% while a slower-than-usual CPU finishes.
+            self.timer.set(f"≈ {min(99, int(progress*100))}%")
         if self.state() != "withdrawn":
             self.main_wave.draw(level, self.active and not self.muted,
                                 converting or complete_flash, progress)

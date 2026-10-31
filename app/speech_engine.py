@@ -8,6 +8,7 @@ import importlib.util
 import json
 import logging
 import logging.handlers
+import math
 import os
 import threading
 import time
@@ -854,6 +855,87 @@ class FasterWhisperAdapter(BaseAdapter):
         self.audio_seconds = len(audio) / 16000
         return self._recognize(audio, language, cancel_event=cancel_event)
 
+    def _decode_options(self) -> dict:
+        """Return a tested quality preset for Faster-Whisper 1.x.
+
+        The more accurate presets search more alternatives and make the speech
+        detector less likely to cut a quiet or accented first/last syllable.
+        Whisper's own no-speech checks remain enabled so lowering the VAD gate
+        does not turn ordinary background noise into text.
+        """
+        quality = self.quality if self.quality in {"Fast", "Balanced", "Accurate"} else "Balanced"
+        presets = {
+            "Fast": {
+                "beam_size": 1, "best_of": 1, "patience": 1.0,
+                "repetition_penalty": 1.0,
+                "log_prob_threshold": -1.0, "no_speech_threshold": 0.55,
+                "vad_threshold": 0.50, "min_speech_ms": 160,
+                "min_silence_ms": 500, "speech_pad_ms": 400,
+            },
+            "Balanced": {
+                "beam_size": 5, "best_of": 5, "patience": 1.05,
+                "repetition_penalty": 1.03,
+                "log_prob_threshold": -1.10, "no_speech_threshold": 0.60,
+                "vad_threshold": 0.42, "min_speech_ms": 120,
+                "min_silence_ms": 550, "speech_pad_ms": 500,
+            },
+            "Accurate": {
+                "beam_size": 8, "best_of": 8, "patience": 1.25,
+                "repetition_penalty": 1.05,
+                "log_prob_threshold": -1.25, "no_speech_threshold": 0.68,
+                "vad_threshold": 0.35, "min_speech_ms": 80,
+                "min_silence_ms": 650, "speech_pad_ms": 600,
+            },
+        }
+        preset = presets[quality]
+        return {
+            "beam_size": preset["beam_size"],
+            "best_of": preset["best_of"],
+            "patience": preset["patience"],
+            "repetition_penalty": preset["repetition_penalty"],
+            "compression_ratio_threshold": 2.4,
+            "log_prob_threshold": preset["log_prob_threshold"],
+            "no_speech_threshold": preset["no_speech_threshold"],
+            "vad_filter": True,
+            "vad_parameters": {
+                "threshold": preset["vad_threshold"],
+                "min_speech_duration_ms": preset["min_speech_ms"],
+                "min_silence_duration_ms": preset["min_silence_ms"],
+                "speech_pad_ms": preset["speech_pad_ms"],
+            },
+            # Deterministic decoding is both reproducible and avoids expensive
+            # high-temperature guesses when a recording contains only noise.
+            "temperature": 0.0,
+            # Context helps long, careful dictation, but on short phrases it can
+            # repeat an earlier sentence. Keep it for Accurate long-form audio.
+            "condition_on_previous_text": quality == "Accurate" and self.audio_seconds > 30,
+            "without_timestamps": 0 < self.audio_seconds <= 25,
+        }
+
+    @staticmethod
+    def _reliable_segment(segment) -> bool:
+        """Reject only strong evidence of noise/repetition hallucination.
+
+        Faster-Whisper already performs its normal confidence filtering. These
+        conservative final guards cover its last-resort zero-temperature result
+        without discarding merely accented or low-volume speech.
+        """
+        def metric(name, default):
+            try:
+                value = float(getattr(segment, name, default))
+                return value if math.isfinite(value) else default
+            except (TypeError, ValueError):
+                return default
+
+        no_speech = metric("no_speech_prob", 0.0)
+        average_log_probability = metric("avg_logprob", 0.0)
+        compression_ratio = metric("compression_ratio", 0.0)
+        if no_speech >= 0.92 and average_log_probability <= -0.70:
+            return False
+        if compression_ratio >= 3.2 and average_log_probability <= -0.55:
+            return False
+        return True
+
     def _recognize(self, audio, language, status_callback=None, cancel_event=None):
         check_cancel_requested(cancel_event)
         self.load(status_callback)
@@ -863,22 +945,9 @@ class FasterWhisperAdapter(BaseAdapter):
         lang_code = WHISPER_LANGUAGE_CODES.get(language, "en")
         start = time.perf_counter()
         try:
+            decode_options = self._decode_options()
             segments, info = self.model.transcribe(
-                audio, language=lang_code,
-                beam_size={"Fast": 1, "Balanced": 3, "Accurate": 5}.get(self.quality, 3),
-                vad_filter=True,
-                # Standard speech probability rejects noise; 400 ms padding
-                # protects quiet consonants at the edges of each detected phrase.
-                vad_parameters={"threshold": .5,
-                                "min_silence_duration_ms": 600, "speech_pad_ms": 400},
-                condition_on_previous_text=False,
-                # Deterministic decoding avoids random high-temperature guesses
-                # on noise and repeated fallback passes on a slow CPU.
-                temperature=0.0,
-                best_of=1 if self.quality == "Fast" else 5,
-                # A short utterance fits in one Whisper window. Skipping timestamp
-                # tokens saves decoder work; longer audio keeps segmentation.
-                without_timestamps=0 < self.audio_seconds <= 25,
+                audio, language=lang_code, **decode_options,
             )
             self.audio_seconds = float(getattr(info, "duration", self.audio_seconds))
             self.timing_audio_seconds = float(getattr(info, "duration_after_vad", self.audio_seconds))
@@ -891,8 +960,10 @@ class FasterWhisperAdapter(BaseAdapter):
             for segment in segments:
                 check_cancel_requested(cancel_event)
                 segment_text = segment.text.strip()
-                if segment_text:
+                if segment_text and self._reliable_segment(segment):
                     transcript_parts.append(segment_text)
+                elif segment_text:
+                    LOGGER.info("Discarded a low-confidence noise/repetition segment")
                 progress = getattr(self, "progress_callback", None)
                 if progress and self.audio_seconds > 0:
                     progress(min(.95, getattr(segment, "end", 0) / self.audio_seconds))
